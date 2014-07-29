@@ -20,16 +20,15 @@ Now you can install monit into your project
 ./capbash install monit
 ```
 
-# How To Configure #
+# Configurations #
 
-You will want to edit the monitrc that is copied into your ./assets/monit/monitrc file.
-
-Change the port, host / IP, and username / password.  Here is the default
+The available configurations include:
 
 ```
-set httpd port 4001
-  use address 127.0.0.1
-  allow monit:monit
+MONIT_PORT=${MONIT_PORT-4001}
+MONIT_HOST=${MONIT_HOST-127.0.0.1}
+MONIT_USER=${MONIT_USER-monit}
+MONIT_PASSWORD=${MONIT_PASSWORD-monit}
 ```
 
 # Deploy to Remote Server #

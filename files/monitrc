@@ -20,8 +20,8 @@ monit
 
 set alert notify@example.com NOT ON { action, instance, pid, ppid }
 
-set httpd port 4001
-  use address 127.0.0.1
-  allow monit:monit
+set httpd port @MONIT_PORT@
+  use address @MONIT_HOST@
+  allow @MONIT_USER@:@MONIT_PASSWORD@
 
 include /etc/monit/conf.d/*.conf

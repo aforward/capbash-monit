@@ -1,5 +1,18 @@
 #!/bin/bash
 
+#-----------
+# Configurations
+#-----------
+
+MONIT_PORT=${MONIT_PORT-4001}
+MONIT_HOST=${MONIT_HOST-127.0.0.1}
+MONIT_USER=${MONIT_USER-monit}
+MONIT_PASSWORD=${MONIT_PASSWORD-monit}
+
+#-----------
+# Install Script
+#-----------
+
 DESIRED_VERSION="5.5.1"
 BASEDIR=./submodules/monit/files
 
@@ -14,14 +27,15 @@ if [[ "`which monit`" == "" ]]; then
   cp $BASEDIR/$MONIT_NAME/bin/monit /usr/local/bin/monit
 fi
 
-MONITRC_FILE=./assets/monit/monitrc
-if [ ! -e $MONITRC_FILE ]; then
-  MONITRC_FILE=$BASEDIR/monitrc
-fi
-
 cp $BASEDIR/monit_default /etc/default/monit
 cp $BASEDIR/monit.conf /etc/init/monit.conf
-cp $MONITRC_FILE /etc/monitrc
+
+cp $BASEDIR/monitrc /etc/monitrc
+sed -i s/@MONIT_PORT@/$MONIT_PORT/g /etc/monitrc
+sed -i s/@MONIT_HOST@/$MONIT_HOST/g /etc/monitrc
+sed -i s/@MONIT_USER@/$MONIT_USER/g /etc/monitrc
+sed -i s/@MONIT_PASSWORD@/$MONIT_PASSWORD/g /etc/monitrc
+
 chmod 700 /etc/monitrc
 
 mkdir -p /etc/monit/conf.d/
