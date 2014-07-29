@@ -1,17 +1,16 @@
 #!/bin/bash
 
 DESIRED_VERSION="5.5.1"
-CURRENT_VERSION=`monit -V | grep version | awk '{print $5;}'`
 BASEDIR=./submodules/monit/files
 
-if [[ "$DESIRED_VERSION" != "$CURRENT_VERSION" ]]; then
+if [[ "`which monit`" == "" ]]; then
   MONIT_NAME=monit-$DESIRED_VERSION
-  MONIT_EXT=linux-x86
+  MONIT_EXT='linux-x86'
   MACHINE=$(uname -m)
-  if [[ "$MACHINE" == 'i686' ]]; then
+  if [[ "$MACHINE" == 'x86_64' ]]; then
     MONIT_EXT='linux-x64'
   fi
-  (cd $BASEDIR && tar zxf ./$MONIT_NAME-$MACHINE.tar.gz)
+  (cd $BASEDIR && tar zxf ./$MONIT_NAME-$MONIT_EXT.tar.gz)
   cp $BASEDIR/$MONIT_NAME/bin/monit /usr/local/bin/monit
 fi
 
