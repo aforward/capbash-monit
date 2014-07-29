@@ -1,0 +1,34 @@
+#!/bin/bash
+
+DESIRED_VERSION="5.5.1"
+CURRENT_VERSION=`monit -V | grep version | awk '{print $5;}'`
+BASEDIR=./submodules/monit/files
+
+if [[ "$DESIRED_VERSION" != "$CURRENT_VERSION" ]]; then
+  MONIT_NAME=monit-$DESIRED_VERSION
+  MONIT_EXT=linux-x86
+  MACHINE=$(uname -m)
+  if [[ "$MACHINE" == 'i686' ]]; then
+    MONIT_EXT='linux-x64'
+  fi
+  (cd $BASEDIR && tar zxf ./$MONIT_NAME-$MACHINE.tar.gz)
+  cp $BASEDIR/$MONIT_NAME/bin/monit /usr/local/bin/monit
+fi
+
+MONITRC_FILE=./assets/monit/monitrc
+if [ ! -e $MONITRC_FILE ]; then
+  MONITRC_FILE=$BASEDIR/monitrc
+fi
+
+cp $BASEDIR/monit_default /etc/default/monit
+cp $BASEDIR/monit.conf /etc/init/monit.conf
+cp $MONITRC_FILE /etc/monitrc
+chmod 700 /etc/monitrc
+
+mkdir -p /etc/monit/conf.d/
+initctl reload-configuration
+
+MONIT_STATUS=`status monit`
+if [[ "$MONIT_STATUS" == "monit stop/waiting" ]]; then
+  start monit
+fi

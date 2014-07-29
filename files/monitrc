@@ -1,0 +1,27 @@
+set daemon 60
+  with start delay 1
+
+set logfile /etc/monit/monit.log
+
+set mailserver localhost
+
+set eventqueue
+    basedir /var/monit  # set the base directory where events will be stored
+#    slots 1000          # optionaly limit the queue size
+
+set mail-format {
+  from: monit@localhost
+  subject: $SERVICE $EVENT
+  message: Monit $ACTION $SERVICE at $DATE on $HOST: $DESCRIPTION.
+Yours sincerely,
+monit
+
+}
+
+set alert notify@example.com NOT ON { action, instance, pid, ppid }
+
+set httpd port 4001
+  use address 127.0.0.1
+  allow monit:monit
+
+include /etc/monit/conf.d/*.conf

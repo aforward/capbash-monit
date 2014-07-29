@@ -1,0 +1,7 @@
+#!/bin/bash
+mkdir -p ./nodes
+cp ./submodules/monit/files/monit_node ./nodes/monit
+chmod 755 ./nodes/monit
+
+mkdir -p ./assets/monit
+cp ./submodules/monit/files/monitrc ./assets/monit/monitrc
