@@ -8,6 +8,7 @@ MONIT_PORT=${MONIT_PORT-4001}
 MONIT_HOST=${MONIT_HOST-127.0.0.1}
 MONIT_USER=${MONIT_USER-monit}
 MONIT_PASSWORD=${MONIT_PASSWORD-monit}
+MONIT_CONF_DIR=${MONIT_CONF_DIR-/etc/monit/conf.d}
 
 #-----------
 # Install Script
@@ -38,7 +39,7 @@ sed -i s/@MONIT_PASSWORD@/$MONIT_PASSWORD/g /etc/monitrc
 
 chmod 700 /etc/monitrc
 
-mkdir -p /etc/monit/conf.d/
+mkdir -p $MONIT_CONF_DIR
 initctl reload-configuration
 
 MONIT_STATUS=`status monit`

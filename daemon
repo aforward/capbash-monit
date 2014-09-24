@@ -1,0 +1,59 @@
+#!/bin/bash
+
+#-----------
+# Configurations
+#-----------
+
+DAEMON_NAME=${DAEMON_NAME-ping}
+DAEMON_LOG=${DAEMON_LOG-/var/log/$DAEMON_NAME.log}
+DAEMON_PID=${DAEMON_PID-/var/log/$DAEMON_NAME.pid}
+DAEMON_COMMAND=${DAEMON_COMMAND-ping localhost}
+DAEMON_SCRIPT=${DAEMON_SCRIPT-/usr/local/$DAEMON_NAME.d}
+DAEMON_STOP_SCRIPT=${DAEMON_STOP_SCRIPT-${DAEMON_SCRIPT}_stop}
+
+MONIT_CONF_DIR=${MONIT_CONF_DIR-/etc/monit/conf.d}
+MONIT_TIMEOUT=${MONIT_TIMEOUT-30}
+MONIT_USER=${MONIT_USER-root}
+MONIT_HOME=${MONIT_HOME-/root}
+
+#-----------
+# Install Script
+#-----------
+
+if [[ ! -e $MONIT_CONF_DIR ]]; then
+  mkdir -p $MONIT_CONF_DIR
+  chown $MONIT_USER $MONIT_CONF_DIR
+  echo "  -- Created $MONIT_CONF_DIR"
+fi
+
+printf "%b" "#!/bin/bash
+logfile=$DAEMON_LOG
+nohup $DAEMON_COMMAND > \$logfile &
+pid=\$!
+echo \"Detached $DAEMON_NAME on pid \$pid (watch it by running the following script)\"
+echo \"tail -f \$logfile\"
+echo \$pid > $DAEMON_PID
+" > $DAEMON_SCRIPT
+
+printf "%b" "
+#!/bin/
+kill -9 \`cat $DAEMON_PID\`
+echo "" > $DAEMON_PID
+" > $DAEMON_STOP_SCRIPT
+
+chmod 755 $DAEMON_SCRIPT
+chmod 755 $DAEMON_STOP_SCRIPT
+
+echo "  -- Created $DAEMON_SCRIPT"
+echo "  -- Created $DAEMON_STOP_SCRIPT"
+
+MONIT_NAME=$DAEMON_NAME \
+  MONIT_PID=$DAEMON_PID \
+  MONIT_START=$DAEMON_SCRIPT \
+  MONIT_STOP=$DAEMON_STOP_SCRIPT \
+  MONIT_TIMEOUT=$MONIT_TIMEOUT \
+  MONIT_CFG_FILE=$MONIT_CONF_DIR/$DAEMON_NAME.cnf \
+  MONIT_USER=$MONIT_USER \
+  MONIT_HOME=$MONIT_HOME \
+  ./submodules/monit/checkpid
+

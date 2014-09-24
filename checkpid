@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#-----------
+# Configurations
+#-----------
+
+MONIT_NAME=${MONIT_NAME-ping}
+MONIT_PID=${MONIT_PID-/tmp/ping.pid}
+MONIT_START=${MONIT_START-"ping localhost & && echo \"\$!\" > /tmp/ping.pid"}
+MONIT_STOP=${MONIT_STOP-"kill -9 \`cat /tmp/ping.pid\`"}
+MONIT_TIMEOUT=${MONIT_TIMEOUT-30}
+MONIT_CFG_FILE=${MONIT_CFG_FILE-/etc/monit/conf.d/ping.cnf}
+MONIT_USER=${MONIT_USER-root}
+MONIT_PATH=${MONIT_PATH-/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin}
+MONIT_HOME=${MONIT_HOME-/root}
+
+#-----------
+# Install Script
+#-----------
+
+printf "%b" "check process $MONIT_NAME with pidfile \"$MONIT_PID\"
+  start = \"/bin/bash -c 'HOME=$MONIT_HOME PATH=$MONIT_PATH $MONIT_START'\" with timeout $MONIT_TIMEOUT seconds
+  stop = \"/bin/bash -c 'HOME=$MONIT_HOME PATH=$MONIT_PATH $MONIT_STOP'\" with timeout $MONIT_TIMEOUT seconds
+  if 4 restarts within 5 cycles then timeout
+" > $MONIT_CFG_FILE
+
+chown $MONIT_USER $MONIT_CFG_FILE
+
+echo "  -- Created $MONIT_CFG_FILE"
