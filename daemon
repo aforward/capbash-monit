@@ -55,5 +55,5 @@ MONIT_NAME=$DAEMON_NAME \
   MONIT_CFG_FILE=$MONIT_CONF_DIR/$DAEMON_NAME.cnf \
   MONIT_USER=$MONIT_USER \
   MONIT_HOME=$MONIT_HOME \
-  ./submodules/monit/checkpid
+  ./bits/monit/checkpid
 

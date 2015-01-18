@@ -1,5 +1,5 @@
 #!/bin/bash
-source ./submodules/bootstrap/logging
+source ./bits/bootstrap/logging
 set -euo pipefail ; IFS=$'\n\t'
 
 #-----------
@@ -17,7 +17,7 @@ MONIT_CONF_DIR=${MONIT_CONF_DIR-/etc/monit/conf.d}
 #-----------
 
 DESIRED_VERSION="5.5.1"
-BASEDIR=./submodules/monit/files
+BASEDIR=./bits/monit/files
 
 if [[ "`which monit 2> /dev/null`" == "" ]]; then
   MONIT_NAME=monit-$DESIRED_VERSION
