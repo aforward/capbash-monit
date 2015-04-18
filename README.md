@@ -6,10 +6,10 @@ Scripts for installing [monit](http://mmonit.com/monit/) monitoring and manageme
 # How to Install #
 
 Install capbash first, more details at:
-https://github.com/aforward/capbash
+https://github.com/capbash/capbash
 
 ```
-curl -s https://raw.githubusercontent.com/aforward/capbash/master/capbash-installer | bash
+curl -s https://raw.githubusercontent.com/capbash/capbash/master/capbash-installer | bash
 capbash new YOUR_REPO_ROOT
 cd YOUR_REPO_ROOT
 ```
